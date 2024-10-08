@@ -14,35 +14,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
-	db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
-
-	orderUser := &model.OrderUser{
-		Name: "John Doe",
-		Orders: []*model.Order{
-			{
-				Desc: "abc",
-				Items: []*model.OrderItem{
-					{
-						ProductID: 1,
-						Product: &model.Product{
-							Name: "haha",
-						},
-					},
-					{
-						Product: &model.Product{
-							Name: "test",
-						},
-					},
-				},
-			},
-		},
-	}
-	_ = orderUser
-	//uDb := db.Create(orderUser)
-	//if uDb.Error != nil {
-	//	panic(uDb.Error)
-	//}
 
 	u1 := &model.OrderUser{}
 	db.First(u1, 3)
@@ -56,5 +27,4 @@ func main() {
 	u3 := &model.OrderUser{}
 	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").First(u3, 3)
 	spew.Dump(u3)
-
 }
