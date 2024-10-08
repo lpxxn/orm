@@ -1,47 +1,20 @@
-package main
+package query
 
 import (
+	"testing"
+
 	"github.com/davecgh/go-spew/spew"
-	"github.com/lpxxn/orm/1base/model"
+	"github.com/lpxxn/orm/1base/gorm1_base/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func main() {
+func TestQuery1(t *testing.T) {
 	println("hello world")
 	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	if err != nil {
 		panic(err)
-	}
-	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
-	db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
-
-	orderUser := &model.OrderUser{
-		Name: "John Doe",
-		Orders: []*model.Order{
-			{
-				Desc: "abc",
-				Items: []*model.OrderItem{
-					{
-						ProductID: 1,
-						Product: &model.Product{
-							Name: "haha",
-						},
-					},
-					{
-						Product: &model.Product{
-							Name: "test",
-						},
-					},
-				},
-			},
-		},
-	}
-	_ = orderUser
-	uDb := db.Create(orderUser)
-	if uDb.Error != nil {
-		panic(uDb.Error)
 	}
 
 	u1 := &model.OrderUser{}
@@ -56,5 +29,8 @@ func main() {
 	u3 := &model.OrderUser{}
 	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").First(u3, 3)
 	spew.Dump(u3)
-
+	t.Log("=============")
+	u4 := []*model.OrderUser{}
+	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").Find(&u4)
+	spew.Dump(u4)
 }

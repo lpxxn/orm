@@ -1,15 +1,15 @@
-package main
+package query
 
 import (
-	"fmt"
+	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/lpxxn/orm/1base/model"
+	"github.com/lpxxn/orm/1base/gorm1_base/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func main() {
+func TestQuery2(t *testing.T) {
 	println("hello world")
 	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
@@ -26,7 +26,7 @@ func main() {
 	// SELECT "order_users"."name" FROM "order_users" WHERE "order_users"."id" = 3 AND "order_users"."deleted_at" IS NULL ORDER BY "order_users"."id" LIMIT 1
 	spew.Dump(u1)
 
-	fmt.Println("=============")
+	t.Log("=============")
 	u4 := []*model.OrderUser{}
 
 	db.Debug().Preload("Orders", func(db *gorm.DB) *gorm.DB {
@@ -36,10 +36,4 @@ func main() {
 		// return db.Order("products.id desc")
 	}).Select("id, email").Find(&u4)
 	spew.Dump(u4)
-}
-
-type MyOrderUser struct {
-	gorm.Model
-	Name   string         `gorm:"type:varchar(100);default:'Anonymous'"`
-	Orders []*model.Order `gorm:"foreignKey:UserID;references:ID"` // Explicit foreign key definition
 }
