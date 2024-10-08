@@ -20,18 +20,21 @@ func main() {
 	u1 := &model.OrderUser{}
 	db.First(u1, 3)
 	spew.Dump(u1)
-	u2 := &model.OrderUser{}
-	// db.Debug().Preload("orders").Preload("order_items").Preload("products").First(u2, 3)
-	// The Preload("Orders") method tells GORM to load the related records for the field Orders in the User struct.
-	db.Debug().Preload("Orders").First(u2, 3)
-	spew.Dump(u2)
-
-	u3 := &model.OrderUser{}
-	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").First(u3, 3)
-	spew.Dump(u3)
 
 	fmt.Println("=============")
 	u4 := []*model.OrderUser{}
-	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").Find(&u4)
+
+	db.Debug().Preload("Orders", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, user_id")
+	}).Preload("Orders.Items").Preload("Orders.Items.Product", func(db *gorm.DB) *gorm.DB {
+		return db.Order("id desc")
+		//return db.Order("products.id desc")
+	}).Select("id, email").Find(&u4)
 	spew.Dump(u4)
+}
+
+type MyOrderUser struct {
+	gorm.Model
+	Name   string         `gorm:"type:varchar(100);default:'Anonymous'"`
+	Orders []*model.Order `gorm:"foreignKey:UserID;references:ID"` // Explicit foreign key definition
 }

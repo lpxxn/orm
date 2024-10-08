@@ -39,10 +39,10 @@ func main() {
 		},
 	}
 	_ = orderUser
-	//uDb := db.Create(orderUser)
-	//if uDb.Error != nil {
-	//	panic(uDb.Error)
-	//}
+	uDb := db.Create(orderUser)
+	if uDb.Error != nil {
+		panic(uDb.Error)
+	}
 
 	u1 := &model.OrderUser{}
 	db.First(u1, 3)

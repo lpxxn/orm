@@ -8,8 +8,8 @@ import (
 
 type OrderUser struct {
 	gorm.Model
-	Name   string
-	Email  string
+	Name   string   `gorm:"type:varchar(100);default:'Anonymous'"`
+	Email  string   `gorm:"type:varchar(100);default:'a@b.com'"`
 	Orders []*Order `gorm:"foreignKey:UserID;references:ID"` // Explicit foreign key definition
 }
 
