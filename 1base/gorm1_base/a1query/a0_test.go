@@ -1,4 +1,4 @@
-package query
+package a1query
 
 import (
 	"testing"
@@ -9,22 +9,22 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestMigrate(t *testing.T) {
+func getDB() *gorm.DB {
 	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	if err != nil {
 		panic(err)
 	}
+	return db.Debug()
+}
+func TestMigrate(t *testing.T) {
+	db := getDB()
 	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
-	db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
+	db.AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
 }
 
 func TestQuery0(t *testing.T) {
-	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-	if err != nil {
-		panic(err)
-	}
+	db := getDB()
 	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
 	//db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
 

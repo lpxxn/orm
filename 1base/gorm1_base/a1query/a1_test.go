@@ -1,21 +1,14 @@
-package query
+package a1query
 
 import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/lpxxn/orm/1base/gorm1_base/model"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func TestQuery1(t *testing.T) {
-	println("hello world")
-	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-	if err != nil {
-		panic(err)
-	}
+	db := getDB()
 
 	u1 := &model.OrderUser{}
 	db.First(u1, 3)

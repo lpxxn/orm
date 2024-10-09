@@ -1,4 +1,4 @@
-package mig1
+package a2mig
 
 import (
 	"database/sql/driver"

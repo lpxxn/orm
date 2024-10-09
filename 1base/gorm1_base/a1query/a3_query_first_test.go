@@ -1,20 +1,15 @@
-package query
+package a1query
 
 import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/lpxxn/orm/1base/gorm1_base/model"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func TestQueryFirst(t *testing.T) {
-	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-	if err != nil {
-		panic(err)
-	}
+	db := getDB()
 	// 查询指定的列
 	type OrderUser struct {
 		Name string `gorm:"type:varchar(100);default:'Anonymous'"`
@@ -39,11 +34,7 @@ func TestQueryFirst(t *testing.T) {
 }
 
 func TestQueryFirst2(t *testing.T) {
-	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
-	if err != nil {
-		panic(err)
-	}
+	db := getDB()
 	// 查询指定的列
 	u1qResult := model.OrderUser{}
 	db.Debug().Model(MyOU{ID: 2}).First(&u1qResult) //没啥用哇，这个u1q,只有update的时候好使，但文档里说是可以的，妈的

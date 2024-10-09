@@ -1,4 +1,4 @@
-package mig1
+package a2mig
 
 import (
 	"math/rand"
@@ -16,10 +16,10 @@ func getDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	return db
+	return db.Debug()
 }
 func TestMigrateTable1(t *testing.T) {
-	db := getDB().Debug()
+	db := getDB()
 	err := db.AutoMigrate(&Cafeteria{}, &SimpleRestaurant{})
 	if err != nil {
 		panic(err)
@@ -27,7 +27,7 @@ func TestMigrateTable1(t *testing.T) {
 }
 
 func TestAddValue(t *testing.T) {
-	db := getDB().Debug()
+	db := getDB()
 
 	newCafeteria := Cafeteria{
 		SnowflakeID: rand.Int63(),
