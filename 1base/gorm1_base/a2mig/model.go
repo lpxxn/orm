@@ -66,6 +66,16 @@ type RestaurantSettings struct {
 	ContractInfo RestaurantContractInfo `json:"contractInfo,omitempty"`
 }
 
+func (c RestaurantSettings) Value() (driver.Value, error) {
+	return json.Marshal(c)
+}
+func (c *RestaurantSettings) Scan(src interface{}) error {
+	if err := json.Unmarshal(src.([]byte), c); err != nil {
+		return err
+	}
+	return nil
+}
+
 type RestaurantContractInfo struct {
 	Contact         string `json:"contact,omitempty"`         // 联系方式
 	ContactPerson   string `json:"contactPerson,omitempty"`   // 接口人
@@ -73,12 +83,13 @@ type RestaurantContractInfo struct {
 	TransferName    string `json:"transferName,omitempty"`    // 转帐名称
 	TransferAccount string `json:"transferAccount,omitempty"` // 转帐帐号
 	PaymentMethod   string `json:"paymentMethod,omitempty"`   // 结款方式
+	Values          int64  `json:"value"`
 }
 
-func (c RestaurantSettings) Value() (driver.Value, error) {
+func (c RestaurantContractInfo) Value() (driver.Value, error) {
 	return json.Marshal(c)
 }
-func (c *RestaurantSettings) Scan(src interface{}) error {
+func (c *RestaurantContractInfo) Scan(src interface{}) error {
 	if err := json.Unmarshal(src.([]byte), c); err != nil {
 		return err
 	}
