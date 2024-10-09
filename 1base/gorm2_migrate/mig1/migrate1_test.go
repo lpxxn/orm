@@ -86,10 +86,16 @@ func TestAddValue(t *testing.T) {
 	t.Logf("new cafeteria id: %d, r1 id: %d, r2 id: %d", cafeNewValue.ID, r1.ID, r2.ID)
 
 	r1WithCafeteria := &RestaurantWithCafeteria{}
-	db.Preload("Cafeteria").First(r1WithCafeteria, r1.ID)
+	err := db.Preload("Cafeteria").First(r1WithCafeteria, r1.ID).Error
+	assert.Nil(t, err)
 	spew.Dump(r1WithCafeteria)
 	assert.NotNil(t, r1WithCafeteria.Cafeteria)
 	assert.Equal(t, r1WithCafeteria.Cafeteria.Name, cafeNewValue.Name)
+
+	cwithr := &CafeteriaWithRestaurants{}
+	err = db.Preload("Restaurants").First(cwithr, cafeNewValue.ID).Error
+	assert.Nil(t, err)
+	t.Logf("cafeteria with restaurnts: %#v, r len: %d", cwithr, len(cwithr.Restaurants))
 }
 
 func TestQueryPreload(t *testing.T) {
