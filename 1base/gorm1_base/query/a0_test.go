@@ -9,8 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestQuery0(t *testing.T) {
-	println("hello world")
+func TestMigrate(t *testing.T) {
 	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
 	if err != nil {
@@ -18,6 +17,16 @@ func TestQuery0(t *testing.T) {
 	}
 	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
 	db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
+}
+
+func TestQuery0(t *testing.T) {
+	dsn := "host=localhost dbname=myorm sslmode=disable TimeZone=Asia/Shanghai"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	if err != nil {
+		panic(err)
+	}
+	// db.Debug().AutoMigrate(&model.User{}, &model.Address{})
+	//db.Debug().AutoMigrate(&model.OrderUser{}, &model.Order{}, &model.Product{}, &model.OrderItem{})
 
 	orderUser := &model.OrderUser{
 		Name: "John Doe",

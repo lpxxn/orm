@@ -10,6 +10,7 @@ type OrderUser struct {
 	gorm.Model
 	Name   string   `gorm:"type:varchar(100);default:'Anonymous'"`
 	Email  string   `gorm:"type:varchar(100);default:'a@b.com'"`
+	Desc   string   `gorm:"size:10"`
 	Orders []*Order `gorm:"foreignKey:UserID;references:ID"` // Explicit foreign key definition
 }
 
