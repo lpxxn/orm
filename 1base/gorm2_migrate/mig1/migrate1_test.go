@@ -4,6 +4,8 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -76,10 +78,18 @@ func TestAddValue(t *testing.T) {
 		Cafeteria:   newCafeteria,
 		Restaurants: []*SimpleRestaurant{r1, r2},
 	}
-	err := db.Create(cafeNewValue).Error
-	if err != nil {
-		panic(err)
+	rev := db.Create(cafeNewValue)
+	if rev.Error != nil {
+		panic(rev.Error)
 	}
+
+	t.Logf("new cafeteria id: %d, r1 id: %d, r2 id: %d", cafeNewValue.ID, r1.ID, r2.ID)
+
+	r1WithCafeteria := &RestaurantWithCafeteria{}
+	db.Preload("Cafeteria").First(r1WithCafeteria, r1.ID)
+	spew.Dump(r1WithCafeteria)
+	assert.NotNil(t, r1WithCafeteria.Cafeteria)
+	assert.Equal(t, r1WithCafeteria.Cafeteria.Name, cafeNewValue.Name)
 }
 
 func TestQueryPreload(t *testing.T) {

@@ -50,6 +50,15 @@ type SimpleRestaurant struct {
 	Style       string             `json:"style" db:"style" gorm:"size:10"`
 }
 
+func (c SimpleRestaurant) TableName() string {
+	return "simple_restaurants"
+}
+
+type RestaurantWithCafeteria struct {
+	SimpleRestaurant
+	Cafeteria Cafeteria
+}
+
 type RestaurantSettings struct {
 	Code         string                 `json:"code,omitempty"`
 	Keyword      []string               `json:"keyword,omitempty"`
