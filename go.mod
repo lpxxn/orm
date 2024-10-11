@@ -1,15 +1,18 @@
 module github.com/lpxxn/orm
 
-go 1.23.0
+go 1.22.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1
+	github.com/go-sql-driver/mysql v1.8.1
+	github.com/google/wire v0.6.0
 	github.com/stretchr/testify v1.8.1
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12
 )
 
 require (
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.7.1 // indirect
