@@ -12,7 +12,8 @@ func TestQueryFirst(t *testing.T) {
 	db := getDB()
 	// 查询指定的列
 	type OrderUser struct {
-		Name string `gorm:"type:varchar(100);default:'Anonymous'"`
+		Name  string `gorm:"type:varchar(100);default:'Anonymous'"`
+		Email string
 	}
 	u1 := &OrderUser{}
 	db.Debug().Model(&model.OrderUser{}).First(u1, 3)
@@ -30,7 +31,20 @@ func TestQueryFirst(t *testing.T) {
 	// SELECT * FROM "order_users" WHERE id = 1 AND "order_users"."deleted_at" IS NULL AND "order_users"."id" = 2 ORDER BY "order_users"."id" LIMIT 1
 	spew.Dump(u1q)
 
-	db.Debug().Model(u1q).Select("name").Updates(u1q)
+	u1q = model.OrderUser{
+		Model: gorm.Model{ID: 2},
+		Name:  "heiheihei",
+		Email: "aaa@heihei.com",
+	}
+	db.Debug().Model(u1q).Select("Email").Updates(u1q)
+	// 指定只更新字段 email，其他字段即使有值也不会更新。
+	// Email
+	// UPDATE "order_users" SET "updated_at"='2025-08-07 23:05:28.917',"email"='aaa@heihei.com' WHERE "order_users"."deleted_at" IS NULL AND "id" = 2
+	// Select("name")  只更新 name 字段
+	//Select("name", "email")  同时更新 name 和 email
+	//Omit("desc") 更新除 desc 外的字段
+	//不写 Select 或 Omit
+	//GORM 会自动判断“非零值”字段来更新
 }
 
 func TestQueryFirst2(t *testing.T) {

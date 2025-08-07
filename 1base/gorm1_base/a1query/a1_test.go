@@ -21,9 +21,21 @@ func TestQuery1(t *testing.T) {
 
 	u3 := &model.OrderUser{}
 	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").First(u3, 3)
-	spew.Dump(u3)
+	//spew.Dump(u3)
+	t.Log(u3)
 	t.Log("=============")
 	u4 := []*model.OrderUser{}
 	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").Find(&u4)
-	spew.Dump(u4)
+	//spew.Dump(u4)
+	t.Log(u4)
+	t.Log("====Orders.Items=========")
+	u3 = &model.OrderUser{}
+	db.Debug().Preload("Orders.Items").First(u3, 3)
+	spew.Dump(u3)
 }
+
+/*
+Preload("A.B") // 表示：预加载 A 的同时，预加载 A 下的 B
+不能有 gorm:"-" 标签否则字段会被 GORM 忽略，无法 preload
+
+*/
