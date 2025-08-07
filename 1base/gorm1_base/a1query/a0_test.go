@@ -1,6 +1,8 @@
 package a1query
 
 import (
+	"reflect"
+	"slices"
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
@@ -68,4 +70,66 @@ func TestQuery0(t *testing.T) {
 	db.Debug().Preload("Orders").Preload("Orders.Items").Preload("Orders.Items.Product").First(u3, 3)
 	spew.Dump(u3)
 
+	u4 := &model.OrderUser{}
+	db.Debug().Select(orderUserAllColumns).First(u4, 3)
+
+	o1 := &model.Order{}
+	db.Debug().Select(orderAllColumns).First(o1, 1)
+}
+
+var orderUserAllColumns = GetTableColumns(getDB(), &model.OrderUser{}, "id", "deleted_at")
+var orderAllColumns = GetTableColumns(getDB(), &model.Order{}, "deleted_at")
+
+func extractTagValues(input interface{}, tagName string, ignoreColumns ...string) []string {
+	var tagValues []string
+	val := reflect.ValueOf(input)
+	typ := reflect.TypeOf(input)
+
+	// Ensure the input is a struct
+	if val.Kind() != reflect.Struct {
+		return tagValues
+	}
+
+	// Traverse the struct fields and collect tag values
+	for i := 0; i < val.NumField(); i++ {
+		field := typ.Field(i)
+
+		// Check if it's an embedded (anonymous) field
+		if field.Anonymous {
+			// Recursively collect tag values from the embedded struct
+			embeddedTagValues := extractTagValues(val.Field(i).Interface(), tagName, ignoreColumns...)
+			tagValues = append(tagValues, embeddedTagValues...)
+		} else {
+			// Get the tag value for the specified tag
+			tagValue := field.Tag.Get(tagName)
+			// check ignoreColumns
+			if slices.Contains(ignoreColumns, tagName) {
+				continue
+			}
+			if tagValue != "" {
+				tagValues = append(tagValues, tagValue)
+			}
+		}
+	}
+
+	return tagValues
+}
+
+func GetTableColumns(db *gorm.DB, model interface{}, ignoreColumns ...string) []string {
+	stmt := &gorm.Statement{DB: db}
+	stmt.Parse(model)
+
+	var columns []string
+	for _, field := range stmt.Schema.Fields {
+		//if !field.AutoIncrement && field.DBName != "" {
+		if field.DBName != "" {
+			// ignoreColumns
+			if slices.Contains(ignoreColumns, field.DBName) {
+				continue
+			}
+			columns = append(columns, field.DBName)
+		}
+	}
+
+	return columns
 }
